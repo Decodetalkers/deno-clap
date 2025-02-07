@@ -4,7 +4,6 @@ import { parseCliArgs } from "./mod.ts";
 const ClapTemplate = {
   run: {
     description: "run the program",
-    default: true,
     children: {
       tcp: {
         description: "with tcp",
