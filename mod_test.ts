@@ -11,6 +11,11 @@ const ClapTemplate = {
         type: "number",
         default: 1000,
       },
+      udp: {
+        description: "with udp",
+        type: "number",
+        default: 1000,
+      },
     },
   },
 } as const;
@@ -28,5 +33,13 @@ Deno.test(function addTest2() {
     ["--run"],
     ClapTemplate,
   );
-  assertEquals(result, { run: true });
+  assertEquals(result, { run: {} });
+});
+
+Deno.test(function addTest3() {
+  const result = parseCliArgs(
+    [],
+    ClapTemplate,
+  );
+  assertEquals(result, {});
 });

@@ -11,8 +11,8 @@ export type Arg = {
 
 // Type mapping function to extract the expected output structure
 type ExtractArgs<T extends Clap> = {
-  [K in keyof T]: T[K] extends { children: infer C extends Clap }
-    ? ExtractArgs<C> | boolean // Recursively extract children
+  [K in keyof T]?: T[K] extends { children: infer C extends Clap }
+    ? ExtractArgs<C> // Recursively extract children
     : T[K]["type"] extends "number" ? number | undefined
     : T[K]["type"] extends "string" ? string | undefined
     : boolean | undefined;
@@ -82,11 +82,8 @@ export function parseCliArgs<T extends Clap>(
       }
       temp[key] = value;
     }
-    if (Object.entries(temp).length == 0) {
-      result[key] = true;
-    } else {
-      result[key] = temp;
-    }
+
+    result[key] = temp;
     index = tempIndex + 1;
   }
   return result as ExtractArgs<T>;
