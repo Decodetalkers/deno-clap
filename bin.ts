@@ -1,4 +1,4 @@
-import { cli, type Command } from "./mod.ts";
+import { clapCli, type Command } from "./mod.ts";
 
 const WebExt = {
   run: {
@@ -45,6 +45,6 @@ const cmd: Command = {
   author: "Decodetalkers",
   version: "0.1.0",
 };
-const results = cli(WebExt, cmd);
+const results = clapCli(WebExt, cmd);
 
 console.log(results);

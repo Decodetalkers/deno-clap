@@ -82,7 +82,7 @@ export type Clap = {
   [key: string]: Arg;
 };
 
-export function cli<T extends Clap>(
+export function clapCli<T extends Clap>(
   clapInit: T,
   command: Command,
 ): ExtractArgs<T> | undefined {
