@@ -60,6 +60,9 @@ import { parseArgs } from "@std/cli";
 
 import { brightYellow, green } from "@std/fmt/colors";
 
+/*
+ * This show the supported arg types
+ */
 export type ArgType = "number" | "string" | "boolean";
 
 /*
@@ -186,37 +189,58 @@ export function parseCliArgs<T extends Clap>(
   }
 
   const len = entries.length;
-  let index = 0;
-  while (index < len) {
+  const index = 0;
+  if (!parseCliArgsInner(clapInit, result, entries, index, len, false)) {
+    return;
+  }
+  return result as ExtractArgs<T>;
+}
+
+function parseCliArgsInner<T extends Clap>(
+  clapChild: T,
+  // deno-lint-ignore no-explicit-any
+  result: { [key: string]: any },
+  // deno-lint-ignore no-explicit-any
+  entries: [string, any][],
+  index: number,
+  maxLen: number,
+  hasTop: boolean,
+): number | undefined {
+  while (index < maxLen) {
     const [key, value] = entries[index];
-    if (!clapInit[key]) {
-      index += 1;
+    if (!clapChild[key]) {
+      if (!hasTop) {
+        index += 1;
+      } else {
+        return index;
+      }
+
       continue;
     }
 
-    if (!clapInit[key].type) {
-      clapInit[key].type = "boolean";
+    if (!clapChild[key].type) {
+      clapChild[key].type = "boolean";
     }
 
     // deno-lint-ignore valid-typeof
-    if (typeof value != clapInit[key].type) {
+    if (typeof value != clapChild[key].type) {
       const checkHelpIndex = index + 1;
-      if (checkHelpIndex < len) {
+      if (checkHelpIndex < maxLen) {
         if (entries[checkHelpIndex][0] == "help") {
-          helpArg(clapInit[key], key);
-          return;
+          helpArg(clapChild[key], key);
+          return undefined;
         }
       }
       index += 1;
       continue;
     }
 
-    if (typeof value != "boolean" || !clapInit[key].children) {
+    if (typeof value != "boolean" || !clapChild[key].children) {
       const checkHelpIndex = index + 1;
-      if (checkHelpIndex < len) {
+      if (checkHelpIndex < maxLen) {
         if (entries[checkHelpIndex][0] == "help") {
-          helpArg(clapInit[key], key);
-          return;
+          helpArg(clapChild[key], key);
+          return undefined;
         }
       }
 
@@ -226,62 +250,31 @@ export function parseCliArgs<T extends Clap>(
     }
 
     const checkHelpIndex = index + 1;
-    if (checkHelpIndex < len) {
+    if (checkHelpIndex < maxLen) {
       if (entries[checkHelpIndex][0] == "help") {
-        helpArg(clapInit[key], key);
-        return;
+        helpArg(clapChild[key], key);
+        return undefined;
       }
     }
-    const childInit = clapInit[key].children;
-
+    const childInit = clapChild[key].children;
+    index += 1;
     // deno-lint-ignore no-explicit-any
     const temp: { [key: string]: any } = {};
-    let tempIndex = index;
-    while (tempIndex < len) {
-      tempIndex += 1;
-      if (tempIndex >= len) {
-        tempIndex -= 1;
-        break;
-      }
-      const [key, value] = entries[tempIndex];
-      if (!childInit[key]) {
-        tempIndex -= 1;
-        break;
-      }
-      if (!childInit[key].type) {
-        childInit[key].type = "boolean";
-      }
-      // deno-lint-ignore valid-typeof
-      if (typeof value != childInit[key].type) {
-        const checkHelpIndex = tempIndex + 1;
-        if (checkHelpIndex < len) {
-          if (entries[checkHelpIndex][0] == "help") {
-            helpArg(childInit[key], key);
-            return;
-          }
-        }
-        index += 1;
-        tempIndex -= 1;
-        break;
-      }
-      temp[key] = value;
+    const newIndex = parseCliArgsInner(
+      childInit,
+      temp,
+      entries,
+      index,
+      maxLen,
+      false,
+    );
+    if (!newIndex) {
+      return index;
     }
-
-    for (const [key, child] of Object.entries(childInit)) {
-      if (temp[key]) {
-        continue;
-      }
-      if (!child.default) {
-        continue;
-      }
-      temp[key] = child.default;
-    }
-
     result[key] = temp;
-    index = tempIndex + 1;
+    index = newIndex;
   }
-
-  for (const [key, child] of Object.entries(clapInit)) {
+  for (const [key, child] of Object.entries(clapChild)) {
     if (result[key]) {
       continue;
     }
@@ -290,5 +283,6 @@ export function parseCliArgs<T extends Clap>(
     }
     result[key] = child.default;
   }
-  return result as ExtractArgs<T>;
+
+  return index;
 }

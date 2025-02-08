@@ -7,13 +7,22 @@ const ClapTemplate = {
     children: {
       tcp: {
         description: "with tcp",
-        type: "number",
-        default: 1000,
+        children: {
+          reconnection: {
+            description: "reconnection",
+            type: "boolean",
+            default: true,
+          },
+          port: {
+            description: "set the port",
+            default: 8000,
+            type: "number",
+          },
+        },
       },
       udp: {
         description: "with udp",
         type: "number",
-        default: 1000,
       },
     },
   },
@@ -27,24 +36,50 @@ const cmd: Command = {
 
 Deno.test(function addTest() {
   const result = parseCliArgs(
-    ["--run", "--tcp", "9000"],
+    ["--run", "--tcp", "--port", "9000"],
     ClapTemplate,
     cmd,
   );
-  assertEquals(result, { run: { tcp: 9000, udp: 1000 } });
+  assertEquals(result, {
+    run: { tcp: { port: 9000, reconnection: true } },
+  });
 });
 
 Deno.test(function addTest2() {
   const result = parseCliArgs(
-    ["--run"],
+    ["--run", "--tcp"],
     ClapTemplate,
     cmd,
   );
-  assertEquals(result, { run: { tcp: 1000, udp: 1000 } });
+  assertEquals(result, {
+    run: { tcp: { port: 8000, reconnection: true } },
+  });
 });
 
 Deno.test(function addTest3() {
-  const result1 =parseCliArgs(
+  const result = parseCliArgs(
+    ["--run", "--udp", "8000"],
+    ClapTemplate,
+    cmd,
+  );
+  assertEquals(result, {
+    run: { udp: 8000 },
+  });
+});
+
+Deno.test(function addTest4() {
+  const result = parseCliArgs(
+    ["--run", "--udp"],
+    ClapTemplate,
+    cmd,
+  );
+  assertEquals(result, {
+    run: {},
+  });
+});
+
+Deno.test(function addTest5() {
+  const result1 = parseCliArgs(
     [],
     ClapTemplate,
     cmd,
