@@ -102,6 +102,7 @@ export function parseCliArgs<T extends Clap>(
     helpCommand(command, clapInit);
     return;
   }
+
   if (entries[0][0] == "version") {
     console.log(command.version);
     return;
@@ -122,17 +123,30 @@ export function parseCliArgs<T extends Clap>(
 
     // deno-lint-ignore valid-typeof
     if (typeof value != clapInit[key].type) {
+      const checkHelpIndex = index + 1;
+      if (checkHelpIndex < len) {
+        if (entries[checkHelpIndex][0] == "help") {
+          helpArg(clapInit[key], key);
+          return;
+        }
+      }
       index += 1;
       continue;
     }
 
     if (typeof value != "boolean" || !clapInit[key].children) {
+      const checkHelpIndex = index + 1;
+      if (checkHelpIndex < len) {
+        if (entries[checkHelpIndex][0] == "help") {
+          helpArg(clapInit[key], key);
+          return;
+        }
+      }
+
       result[key] = value;
       index += 1;
       continue;
     }
-
-    const childInit = clapInit[key].children;
 
     const checkHelpIndex = index + 1;
     if (checkHelpIndex < len) {
@@ -141,6 +155,7 @@ export function parseCliArgs<T extends Clap>(
         return;
       }
     }
+    const childInit = clapInit[key].children;
 
     // deno-lint-ignore no-explicit-any
     const temp: { [key: string]: any } = {};
@@ -161,6 +176,14 @@ export function parseCliArgs<T extends Clap>(
       }
       // deno-lint-ignore valid-typeof
       if (typeof value != childInit[key].type) {
+        const checkHelpIndex = tempIndex + 1;
+        if (checkHelpIndex < len) {
+          if (entries[checkHelpIndex][0] == "help") {
+            helpArg(childInit[key], key);
+            return;
+          }
+        }
+        index += 1;
         tempIndex -= 1;
         break;
       }
@@ -180,6 +203,7 @@ export function parseCliArgs<T extends Clap>(
     result[key] = temp;
     index = tempIndex + 1;
   }
+
   for (const [key, child] of Object.entries(clapInit)) {
     if (result[key]) {
       continue;
