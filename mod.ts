@@ -104,6 +104,11 @@ function helpArg(arg: Arg, key: string) {
   }
 }
 
+/**
+ * The base information of The Command
+ * contains the exeName, author, version and description.
+ * author is choosable.
+ */
 export type Command = {
   exeName: string;
   author?: string;
@@ -135,8 +140,10 @@ function helpCommand(
   console.log(green("  --version"));
 }
 
-// Type mapping function to extract the expected output structure
-type ExtractArgs<T extends Clap> = {
+/**
+ * It is used to auto generate the return type by the passed in value which extends Clap
+ */
+export type ExtractArgs<T extends Clap> = {
   [K in keyof T]?: T[K] extends { children: infer C extends Clap }
     ? ExtractArgs<C> // Recursively extract children
     : T[K]["type"] extends "number" ? number | undefined
