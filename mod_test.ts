@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { parseCliArgs } from "./mod.ts";
+import { type Command, parseCliArgs } from "./mod.ts";
 
 const ClapTemplate = {
   run: {
@@ -19,10 +19,17 @@ const ClapTemplate = {
   },
 } as const;
 
+const cmd: Command = {
+  exeName: "run",
+  description: "it is an example",
+  version: "0.1.0",
+};
+
 Deno.test(function addTest() {
   const result = parseCliArgs(
     ["--run", "--tcp", "9000"],
     ClapTemplate,
+    cmd,
   );
   assertEquals(result, { run: { tcp: 9000, udp: 1000 } });
 });
@@ -31,14 +38,28 @@ Deno.test(function addTest2() {
   const result = parseCliArgs(
     ["--run"],
     ClapTemplate,
+    cmd,
   );
   assertEquals(result, { run: { tcp: 1000, udp: 1000 } });
 });
 
 Deno.test(function addTest3() {
-  const result = parseCliArgs(
+  const result1 =parseCliArgs(
     [],
     ClapTemplate,
+    cmd,
   );
-  assertEquals(result, {});
+  assertEquals(result1, undefined);
+  const result2 = parseCliArgs(
+    ["--version"],
+    ClapTemplate,
+    cmd,
+  );
+  assertEquals(result2, undefined);
+  const result3 = parseCliArgs(
+    ["--run", "--help"],
+    ClapTemplate,
+    cmd,
+  );
+  assertEquals(result3, undefined);
 });
