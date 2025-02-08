@@ -2,7 +2,9 @@
 
 This lib try to make a clap for deno.
 
-Yarg is strong, but I do not like that style. I prefer that one of rust, use derive. So I want to make another one with type systemd of typescript, make it easier to be matched.
+Yarg is strong, but I do not like that style. I prefer that one of rust, use
+derive. So I want to make another one with type systemd of typescript, make it
+easier to be matched.
 
 This is a very simple one
 

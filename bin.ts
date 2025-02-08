@@ -45,6 +45,8 @@ const cmd: Command = {
   author: "Decodetalkers",
   version: "0.1.0",
 };
-const results = clapCli(WebExt, cmd);
 
-console.log(results);
+const result = clapCli(WebExt, cmd);
+
+console.log();
+console.log("result is", result);
