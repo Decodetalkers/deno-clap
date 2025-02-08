@@ -1,9 +1,72 @@
+/**
+ * @module
+ * This is lib use std/cli, but make the result be able to have structure.
+ *
+ * @example
+ * ```typescript
+ * import { clapCli, type Command } from "@nobody/deno-clap";
+ * const WebExt = {
+ *   run: {
+ *     description: "run the WebExt",
+ *     default: true,
+ *   },
+ *   firefox: {
+ *     description: "run with firefox",
+ *     children: {
+ *       port: {
+ *         description: "with port",
+ *         type: "number",
+ *         default: 8000,
+ *       },
+ *       devtool: {
+ *         description: "with devtool",
+ *         type: "boolean",
+ *         default: false,
+ *       },
+ *       profile: {
+ *         description: "with profile",
+ *         type: "string",
+ *       },
+ *     },
+ *   },
+ *   chromium: {
+ *     description: "run with chromium",
+ *     newDataDir: {
+ *       description: "withNewDataDir",
+ *       type: "boolean",
+ *       default: true,
+ *     },
+ *   },
+ *   targetDir: {
+ *     description: "set the targetDir",
+ *     default: "./",
+ *     type: "string",
+ *   },
+ * } as const;
+ *
+ * const cmd: Command = {
+ *   exeName: "web-ext",
+ *   description: "web-ext in deno",
+ *   author: "Decodetalkers",
+ *   version: "0.1.0",
+ * };
+ * const results = clapCli(WebExt, cmd);
+ *
+ * console.log(results);
+ * ```
+ */
+
 import { parseArgs } from "@std/cli";
 
 import { brightYellow, green } from "@std/fmt/colors";
 
-type ArgType = "number" | "string" | "boolean";
+export type ArgType = "number" | "string" | "boolean";
 
+/*
+ * This is the type of the args, but do not use it directly
+ * Do not use it to mark the type of object, if do that, the type of children will always be Clap | undefined
+ * Then the type system will not work
+ */
 export type Arg = {
   type?: ArgType;
   description: string;
@@ -78,10 +141,20 @@ type ExtractArgs<T extends Clap> = {
     : boolean | undefined;
 };
 
+/*
+ * This is the type of the Clap, but do not use it directly
+ * Do not use it to mark the type of object, if do that, the type of children will always be Clap | undefined
+ * Then the type system will not work
+ */
 export type Clap = {
   [key: string]: Arg;
 };
 
+/*
+ * It is similar with @std/cli, and it also uses that.
+ * It can return a structured resulted, whose type is generated with that one passed in with value
+ * Note: You need to mark the clapInit as Const, then the type system will work
+ */
 export function clapCli<T extends Clap>(
   clapInit: T,
   command: Command,
@@ -89,6 +162,10 @@ export function clapCli<T extends Clap>(
   return parseCliArgs(Deno.args, clapInit, command);
 }
 
+/**
+ * It is similar with clapCli, clapCli directly use the Deno.args and the input, if you use this one, you need to pass args manally.
+ * I export it because I need to do unit test.
+ */
 export function parseCliArgs<T extends Clap>(
   args: string[],
   clapInit: T,
