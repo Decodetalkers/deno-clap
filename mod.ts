@@ -83,8 +83,27 @@ export function parseCliArgs<T extends Clap>(
       temp[key] = value;
     }
 
+    for (const [key, child] of Object.entries(childInit)) {
+      if (temp[key]) {
+        continue;
+      }
+      if (!child.default) {
+        continue;
+      }
+      temp[key] = child.default;
+    }
+
     result[key] = temp;
     index = tempIndex + 1;
+  }
+  for (const [key, child] of Object.entries(init)) {
+    if (result[key]) {
+      continue;
+    }
+    if (!child.default) {
+      continue;
+    }
+    result[key] = child.default;
   }
   return result as ExtractArgs<T>;
 }

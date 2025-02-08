@@ -24,7 +24,7 @@ Deno.test(function addTest() {
     ["--run", "--tcp", "9000"],
     ClapTemplate,
   );
-  assertEquals(result, { run: { tcp: 9000 } });
+  assertEquals(result, { run: { tcp: 9000, udp: 1000 } });
 });
 
 Deno.test(function addTest2() {
@@ -32,7 +32,7 @@ Deno.test(function addTest2() {
     ["--run"],
     ClapTemplate,
   );
-  assertEquals(result, { run: {} });
+  assertEquals(result, { run: { tcp: 1000, udp: 1000 } });
 });
 
 Deno.test(function addTest3() {
