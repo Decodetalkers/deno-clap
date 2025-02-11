@@ -164,8 +164,10 @@ export type Clap = {
  * It is similar with @std/cli, and it also uses that.
  * It can return a structured resulted, whose type is generated with that one passed in with value
  * Note: You need to mark the clapInit as Const, then the type system will work
- * @param clapInit clapInit is the object which extends the Clap, descripts the structure of args, it should be const
- * @param command the information of Command, which has the information of author and etc
+ * @param clapInit the clapInit is the object which extends the Clap, descripts the structure of args, it should be const
+ * @param command The information of Command, which has the information of author and etc
+ *
+ * @returns the return is ExtractArgs<T> | undefined. You may wonder when it will be undefined. For example, when you pass --help or --version into the function, it will print the help or version, then nothing will return. But if when you request a command, it will return the result.
  */
 export function clapCli<T extends Clap>(
   clapInit: T,
@@ -177,9 +179,10 @@ export function clapCli<T extends Clap>(
 /**
  * It is similar with clapCli, clapCli directly use the Deno.args and the input, if you use this one, you need to pass args manally.
  * I export it because I need to do unit test.
- * @param args the args of cli. for example, Deno.args
- * @param clapInit clapInit is the object which extends the Clap, descripts the structure of args, it should be const
- * @param command the information of Command, which has the information of author and etc
+ * @param args The args of cli. for example, Deno.args
+ * @param clapInit The clapInit is the object which extends the Clap, descripts the structure of args, it should be const
+ * @param command The information of Command, which has the information of author and etc
+ * @returns The return is ExtractArgs<T> | undefined. You may wonder when it will be undefined. For example, when you pass --help or --version into the function, it will print the help or version, then nothing will return. But if when you request a command, it will return the result.
  */
 export function parseCliArgs<T extends Clap>(
   args: string[],

@@ -58,6 +58,9 @@ const cmd: Command = {
   author: "Decodetalkers",
   version: "0.1.0",
 };
+
+// The result is structured, you can auto complete it if you are using denols.
+// For example, you can complete some code like `results?.firefox?.description`
 const results = clapCli(WebExt, cmd);
 
 console.log(results);
