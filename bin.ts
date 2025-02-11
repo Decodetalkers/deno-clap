@@ -26,10 +26,12 @@ const WebExt = {
   },
   chromium: {
     description: "run with chromium",
-    newDataDir: {
-      description: "withNewDataDir",
-      type: "boolean",
-      default: true,
+    children: {
+      newDataDir: {
+        description: "withNewDataDir",
+        type: "boolean",
+        default: true,
+      },
     },
   },
   targetDir: {

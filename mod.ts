@@ -71,9 +71,22 @@ export type ArgType = "number" | "string" | "boolean";
  * Then the type system will not work
  */
 export type Arg = {
+  /**
+   * The type of this argument, default is boolean. If there is children, type will become object
+   * Available value is number, string and boolean
+   */
   type?: ArgType;
+  /**
+   * Description about what this argument is used for
+   */
   description: string;
+  /**
+   * Default argument, this argument should be same of the type passed in, or this field will be invisible in the result
+   */
   default?: string | number | boolean;
+  /**
+   * The child arguments of this argument
+   */
   children?: Clap;
 };
 
@@ -110,9 +123,21 @@ function helpArg(arg: Arg, key: string) {
  * author is choosable.
  */
 export type Command = {
+  /**
+   * The name of the command
+   */
   exeName: string;
+  /**
+   * The name of author
+   */
   author?: string;
+  /**
+   * The version of this program
+   */
   version: string;
+  /**
+   * What is this program used for
+   */
   description: string;
 };
 
@@ -140,22 +165,38 @@ function helpCommand(
   console.log(green("  --version"));
 }
 
-/**
- * It is used to auto generate the return type by the passed in value which extends Clap
- */
-export type ExtractArgs<T extends Clap> = {
-  [K in keyof T]?: T[K] extends { children: infer C extends Clap }
-    ? ExtractArgs<C> // Recursively extract children
-    : T[K]["type"] extends "number" ? number | undefined
-    : T[K]["type"] extends "string" ? string | undefined
-    : boolean | undefined;
-};
-
 /*
  * This is the type of the Clap, but do not use it directly
  * Do not use it to mark the type of object, if do that, the type of children will always be Clap | undefined
  * Then the type system will not work
  */
+export type ExtractArgs<T extends Clap> =
+  & {
+    // This is used to check which has a default field
+    [
+      K in keyof T as T[K] extends { default: infer D }
+        ? D extends TypeFromArg<T[K]> ? K
+        : never
+        : never
+    ]: T[K] extends { children: infer C extends Clap } ? ExtractArgs<C>
+      : TypeFromArg<T[K]>;
+  }
+  & {
+    // option part which does not contain default field
+    [
+      // deno-lint-ignore no-explicit-any
+      K in keyof T as T[K] extends { default: any } ? never
+        : K
+    ]?: T[K] extends { children: infer C extends Clap } ? ExtractArgs<C>
+      : TypeFromArg<T[K]>;
+  };
+
+// Extract the correct type from Arg["type"]
+type TypeFromArg<T> = T extends { type: "number" } ? number
+  : T extends { type: "string" } ? string
+  : T extends { type: "boolean" } ? boolean
+  : boolean; // Default to `boolean` if no `type` is provided
+
 export type Clap = {
   [key: string]: Arg;
 };

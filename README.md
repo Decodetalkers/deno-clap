@@ -1,5 +1,7 @@
 # Deno clap
 
+[![JSR](https://jsr.io/badges/@nobody/deno-clap)](https://jsr.io/@nobody/deno-clap)
+
 This lib try to make a clap for deno.
 
 Yarg is strong, but I do not like that style. I prefer that one of rust, use
