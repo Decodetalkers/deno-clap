@@ -62,3 +62,7 @@ const results = clapCli(WebExt, cmd);
 
 console.log(results);
 ```
+
+## Example
+
+![show](./images/show.png)
