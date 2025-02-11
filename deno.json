@@ -1,7 +1,10 @@
 {
   "name": "@nobody/deno-clap",
   "version": "0.2.9",
-  "exports": "./mod.ts",
+  "exports": {
+    ".": "./mod.ts",
+    "./settings": "./settings.ts"
+  },
   "tasks": {
     "dev": "deno test --watch mod.ts"
   },

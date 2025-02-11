@@ -60,8 +60,7 @@
 
 import { parseArgs } from "@std/cli";
 
-import { brightYellow, green } from "@std/fmt/colors";
-
+import GlobalStyle from "./settings.ts";
 /*
  * This show the supported arg types
  */
@@ -94,7 +93,7 @@ export type Arg = {
 
 function helpArg(arg: Arg, key: string) {
   const type = arg.type || "boolean";
-  let usgeInfo = green(`--${key}`);
+  let usgeInfo = GlobalStyle.literal(`--${key}`);
   if (type !== "boolean") {
     usgeInfo += ` {${type}}`;
   }
@@ -106,14 +105,14 @@ function helpArg(arg: Arg, key: string) {
 
   console.log(description);
   console.log();
-  console.log(`${brightYellow("Usage")}: ${usgeInfo}`);
+  console.log(`${GlobalStyle.header("Usage")}: ${usgeInfo}`);
   if (!arg.children) {
     return;
   }
   console.log();
-  console.log(brightYellow("Arguments:"));
+  console.log(GlobalStyle.header("Arguments:"));
   for (const [key, child] of Object.entries(arg.children)) {
-    const pre = green(` --${key}`.padEnd(25, " "));
+    const pre = GlobalStyle.literal(` --${key}`.padEnd(25, " "));
     const end = child.description;
     console.log(pre + end);
   }
@@ -150,21 +149,25 @@ function helpCommand(
   console.log(description);
   console.log();
   if (author) {
-    console.log(`${brightYellow("Author:")} ${author}`);
+    console.log(`${GlobalStyle.header("Author:")} ${author}`);
     console.log();
   }
-  console.log(`${brightYellow("Usage:")} ${green(exeName)} <Arguments>`);
+  console.log(
+    `${GlobalStyle.header("Usage:")} ${
+      GlobalStyle.literal(exeName)
+    } <Arguments>`,
+  );
   console.log();
-  console.log(brightYellow("Arguments:"));
+  console.log(GlobalStyle.header("Arguments:"));
   for (const [key, child] of Object.entries(arg)) {
-    const pre = green(` --${key}`.padEnd(25, " "));
+    const pre = GlobalStyle.literal(` --${key}`.padEnd(25, " "));
     const end = child.description;
     console.log(pre + end);
   }
   console.log();
-  console.log(brightYellow("Options:"));
-  console.log(green(" --help"));
-  console.log(green(" --version"));
+  console.log(GlobalStyle.header("Options:"));
+  console.log(GlobalStyle.literal(" --help"));
+  console.log(GlobalStyle.literal(" --version"));
 }
 
 /**
@@ -359,3 +362,5 @@ function parseCliArgsInner<T extends Clap>(
 
   return index;
 }
+
+export { GlobalStyle };

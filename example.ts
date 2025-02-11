@@ -1,5 +1,11 @@
 import { clapCli, type Command } from "./mod.ts";
 
+import { brightGreen, yellow } from "@std/fmt/colors";
+import GlobalStyle from "./settings.ts";
+
+GlobalStyle.setLiteral(brightGreen);
+GlobalStyle.setHeader(yellow);
+
 const WebExt = {
   run: {
     description: "run the WebExt",
