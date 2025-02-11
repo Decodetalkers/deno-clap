@@ -174,9 +174,9 @@ export type ExtractArgs<T extends Clap> =
   & {
     // This is used to check which has a default field
     [
-      K in keyof T as T[K] extends { default: infer D }
-        ? D extends TypeFromArg<T[K]> ? K
-        : never
+      K in keyof T as T[K] extends IllegalClap ? never
+        : T[K] extends { default: infer D } ? D extends TypeFromArg<T[K]> ? K
+          : never
         : never
     ]: T[K] extends { children: infer C extends Clap } ? ExtractArgs<C>
       : TypeFromArg<T[K]>;
@@ -184,12 +184,24 @@ export type ExtractArgs<T extends Clap> =
   & {
     // option part which does not contain default field
     [
-      // deno-lint-ignore no-explicit-any
-      K in keyof T as T[K] extends { default: any } ? never
+      K in keyof T as T[K] extends IllegalClap ? never
+        // deno-lint-ignore no-explicit-any
+        : T[K] extends { default: any } ? never
         : K
     ]?: T[K] extends { children: infer C extends Clap } ? ExtractArgs<C>
       : TypeFromArg<T[K]>;
   };
+
+// It is not allowed to contain type or default field when it already contain the field of children
+type IllegalClap = {
+  // deno-lint-ignore no-explicit-any
+  type: any;
+  children: Clap;
+} | {
+  // deno-lint-ignore no-explicit-any
+  default: any;
+  children: Clap;
+};
 
 // Extract the correct type from Arg["type"]
 type TypeFromArg<T> = T extends { type: "number" } ? number
