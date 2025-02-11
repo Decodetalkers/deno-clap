@@ -150,10 +150,10 @@ function helpCommand(
   console.log(description);
   console.log();
   if (author) {
-    console.log(`${brightYellow("Author:")}: ${author}`);
+    console.log(`${brightYellow("Author:")} ${author}`);
     console.log();
   }
-  console.log(`${brightYellow("Usage")}: ${green(exeName)} <Arguments>`);
+  console.log(`${brightYellow("Usage:")} ${green(exeName)} <Arguments>`);
   console.log();
   console.log(brightYellow("Arguments:"));
   for (const [key, child] of Object.entries(arg)) {
