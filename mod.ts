@@ -31,10 +31,12 @@
  *   },
  *   chromium: {
  *     description: "run with chromium",
- *     newDataDir: {
- *       description: "withNewDataDir",
- *       type: "boolean",
- *       default: true,
+ *     children: {
+ *      newDataDir: {
+ *        description: "withNewDataDir",
+ *        type: "boolean",
+ *        default: true,
+ *      }
  *     },
  *   },
  *   targetDir: {
@@ -165,10 +167,8 @@ function helpCommand(
   console.log(green("  --version"));
 }
 
-/*
- * This is the type of the Clap, but do not use it directly
- * Do not use it to mark the type of object, if do that, the type of children will always be Clap | undefined
- * Then the type system will not work
+/**
+ * It is used to auto generate the return type by the passed in value which extends Clap
  */
 export type ExtractArgs<T extends Clap> =
   & {
@@ -197,6 +197,11 @@ type TypeFromArg<T> = T extends { type: "number" } ? number
   : T extends { type: "boolean" } ? boolean
   : boolean; // Default to `boolean` if no `type` is provided
 
+/**
+ * This is the type of the Clap, but do not use it directly
+ * Do not use it to mark the type of object, if do that, the type of children will always be Clap | undefined
+ * Then the type system will not work
+ */
 export type Clap = {
   [key: string]: Arg;
 };
