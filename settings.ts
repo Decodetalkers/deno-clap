@@ -81,6 +81,6 @@ class PrintSetting {
 /**
  * GlobalStyle, which the clap uses.
  */
-const GlobalStyle = new PrintSetting();
+const GlobalStyle: PrintSetting = new PrintSetting();
 
 export default GlobalStyle;
