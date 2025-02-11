@@ -111,7 +111,7 @@ function helpArg(arg: Arg, key: string) {
     return;
   }
   console.log();
-  console.log(brightYellow("Commands:"));
+  console.log(brightYellow("Arguments:"));
   for (const [key, child] of Object.entries(arg.children)) {
     const pre = green(` --${key}`.padEnd(25, " "));
     const end = child.description;
@@ -153,18 +153,18 @@ function helpCommand(
     console.log(`${brightYellow("Author:")}: ${author}`);
     console.log();
   }
-  console.log(`${brightYellow("Usage")}: ${green(exeName)} <COMMAND>`);
+  console.log(`${brightYellow("Usage")}: ${green(exeName)} <Arguments>`);
   console.log();
-  console.log(brightYellow("Commands:"));
+  console.log(brightYellow("Arguments:"));
   for (const [key, child] of Object.entries(arg)) {
-    const pre = green(`  --${key}`.padEnd(25, " "));
+    const pre = green(` --${key}`.padEnd(25, " "));
     const end = child.description;
     console.log(pre + end);
   }
   console.log();
   console.log(brightYellow("Options:"));
-  console.log(green("  --help"));
-  console.log(green("  --version"));
+  console.log(green(" --help"));
+  console.log(green(" --version"));
 }
 
 /**
