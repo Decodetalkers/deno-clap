@@ -4,7 +4,7 @@
  *
  * @example
  * ```typescript
- * import { clapCli, type Command } from "@nobody/deno-clap";
+ * import { clapCli, type Command } from "@nobody/clap-clap";
  * const WebExt = {
  *   run: {
  *     description: "run the WebExt",
