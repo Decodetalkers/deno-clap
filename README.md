@@ -13,7 +13,7 @@ This is a very simple one
 ## Example
 
 ```typescript
-import { clapCli, type Command } from "@nobody/clap-deno";
+import { clapCli, type Command } from "@nobody/deno-clap";
 
 const WebExt = {
   run: {
