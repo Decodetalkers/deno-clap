@@ -238,7 +238,7 @@ export function clapCli<T extends Clap>(
 }
 
 /**
- * It is similar with clapCli, clapCli directly use the Deno.args and the input, if you use this one, you need to pass args manally.
+ * It is similar with clapCli, clapCli directly use the Deno.args and the input, if you use this one, you need to pass args manually.
  * I export it because I need to do unit test.
  * @param args The args of cli. for example, Deno.args
  * @param clapInit The clapInit is the object which extends the Clap, descripts the structure of args, it should be const
